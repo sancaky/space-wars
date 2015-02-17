@@ -1,0 +1,94 @@
+* {margin: 0px; padding: 0px;}
+
+body {
+	background: #0d0d0d;
+	overflow: hidden;
+}
+
+/*================= Enviroment ====================*/
+.star {
+	width: 1px;
+	height: 1px;
+	background: #fff;
+	border-radius: 50%;
+	display: inline-block;
+	position: absolute;
+	z-index: -10;
+}
+
+.starInActionSmall {
+	width: 2px;
+	height: 2px;
+	background: #fff;
+	border-radius: 50%;
+	display: inline-block;
+	position: absolute;
+	z-index: -10;
+	top: 0px;
+}
+
+.starInActionBig {
+	width: 6px;
+	height: 6px;
+	background: #fff;
+	border-radius: 50%;
+	display: inline-block;
+	position: absolute;
+	z-index: -10;
+	top: 0px;
+}
+
+.meteorInAction1 {
+	background: url('../img/meteor1.png') no-repeat center center;
+	width: 200px;
+	height: 200px;
+	display: block;
+	position: absolute;
+	z-index: -10;
+	top: 0px;
+}
+
+/*================= Flight ====================*/
+button {
+    display: inline-block;
+    background: url("../img/flight.png") no-repeat center center;
+    height: 100px;
+    width: 100px;
+    border: none;
+    outline: none;
+    position: absolute;
+    bottom: 0px; 
+}
+
+.healthBar {
+	border: 1px solid green;
+	border-radius: 3px;
+	height: 10px;
+	position: absolute;
+	top: 8px;
+	width: 500px;
+	z-index: -1;
+}
+
+.healthBar .inner {
+	background: green;
+	height: inherit;
+	width: 100%;
+}
+
+.ammo {
+	color: #fff;
+	position: absolute;
+}
+
+/*================= Flight ====================*/
+.enemy_1 {
+    display: inline-block;
+    background: url("../img/enemy_1.png") no-repeat center center;
+    height: 100px;
+    width: 100px;
+    border: none;
+    outline: none;
+    position: absolute;
+    top: 0px; 
+}
