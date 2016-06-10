@@ -172,13 +172,41 @@ var $airFight = (function() {
                                 easing: 'linear',
                                 complete: function() {
                                     $(this).remove();
+                                },
+                                step: function() {
+                                    hitEnemy( $(this) );
                                 }
                             });
 
         },
 
-        hitEnemy    = function($div1, $div2) {
+        hitEnemy    = function(ammo) {
+            $('.enemy_1').each(function(index, element)
+            {
+               
+                var $enemy = $(this),
+                    $ammo  = ammo,
+                    x1 = $enemy.offset().left,
+                    y1 = $enemy.offset().top,
+                    h1 = $enemy.outerHeight(true),
+                    w1 = $enemy.outerWidth(true),
+                    b1 = y1 + h1,
+                    r1 = x1 + w1,
+                    x2 = $ammo.offset().left,
+                    y2 = $ammo.offset().top,
+                    h2 = $ammo.outerHeight(true),
+                    w2 = $ammo.outerWidth(true),
+                    b2 = y2 + h2,
+                    r2 = x2 + w2;
 
+                if (b1 < y2 || y1 > b2 || r1 < x2 || x1 > r2)
+                { }
+                else
+                {
+                    $enemy.remove();
+                }
+
+            });
         },
 
         collide     = function($div1, $div2) {
