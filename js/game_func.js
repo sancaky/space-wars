@@ -20,6 +20,7 @@ var $airFight = (function() {
             enviroment();
             enemy();
             healthBar();
+            scoreBar();
             getFlightSize();
             getWinSize();
             centerizeFlight();
@@ -29,26 +30,8 @@ var $airFight = (function() {
         },
 
         // create space enviroment
-        enviroment  = function() {
-
-            // create stars around space randomly
-          /*  for(var i = 1; i <= 600; i++) {
-                $body.append("<span class='star'></span>");
-            }
-
-            enviroment.star = $(".star");
-            enviroment.star.each(function(){
-
-                var divsize = 10;
-                positionX = ( Math.random() * ($(document).width() - divsize) ).toFixed(),
-                positionY = ( Math.random() * ($(document).height() - divsize) ).toFixed();
-
-                $(this).css({
-                    'left': positionX + 'px',
-                    'top': positionY + 'px'
-                });
-
-            });*/
+        enviroment  = function()
+        {
 
             function starInActionSmall() {
                 var starSize = 10,
@@ -98,13 +81,14 @@ var $airFight = (function() {
         },
 
         // create enemy
-        enemy           = function() {
-
-            function newEnemy() {
+        enemy  = function()
+        {
+            function newEnemy()
+            {
                 var divsize = 10,
                 positionX = ( Math.random() * ($(document).width() - divsize) ).toFixed();
                 $body
-                    .append("<div class='enemy_1' style='left:"+positionX+"px'></div>")
+                    .append("<div class='enemy_1' data-health='15' style='left:"+positionX+"px'></div>")
                     .find('.enemy_1:last')
                     .animate({top: winSize.height },{
                         duration: 2000  / speed,
@@ -121,11 +105,18 @@ var $airFight = (function() {
             setInterval(newEnemy, 1000);
         },
 
-        healthBar       = function() {
+        healthBar = function()
+        {
             $body.append("<div class='healthBar'><div class='inner'></div></div>");
         },
 
-        healthStatus    = function(damage) {
+        scoreBar = function()
+        {
+            $body.append("<div class='scoreBar'>0</div>");
+        },
+
+        healthStatus = function(damage)
+        {
 
             $body.find(".healthBar .inner")
                 .stop(true,false)
@@ -142,25 +133,39 @@ var $airFight = (function() {
 
         },
 
+        scoreStatus = function(scoreAmount)
+        {
+            var $scoreBar       = $body.find('.scoreBar'),
+                currentScore    = $scoreBar.text(),
+                currentScore    = parseInt(currentScore),
+                newScore        = currentScore + scoreAmount;
+
+            $scoreBar.text(newScore);
+        },
+
         //get flight size
-        getFlightSize   = function() {
+        getFlightSize   = function()
+        {
             flightSize.width    = $flight.width();
             flightSize.height   = $flight.height();
         },
 
         //get window size
-        getWinSize  = function() {
+        getWinSize  = function()
+        {
             winSize.width   = $win.width();
             winSize.height  = $win.height();
         },
 
         //center the flight
-        centerizeFlight = function() {
+        centerizeFlight = function()
+        {
             $flight.css({left: ( winSize.width - flightSize.width ) / 2 });
         },
 
         // ammo
-        ammo        = function() {
+        ammo  = function()
+        {
             $flight.append("<span class='ammo'>+</span>");
             flightAmmo.single = $flight.find(".ammo");
             flightAmmo.single.css({position: 'absolute'});
@@ -180,10 +185,11 @@ var $airFight = (function() {
 
         },
 
-        hitEnemy    = function(ammo) {
+        hitEnemy = function(ammo)
+        {
             $('.enemy_1').each(function(index, element)
             {
-               
+
                 var $enemy = $(this),
                     $ammo  = ammo,
                     x1 = $enemy.offset().left,
@@ -203,39 +209,62 @@ var $airFight = (function() {
                 { }
                 else
                 {
-                    $enemy.remove();
+                    destroyEnemy($enemy);
                 }
 
             });
         },
 
-        collide     = function($div1, $div2) {
+        destroyEnemy = function(enemy)
+        {
+            var $enemy = enemy,
+                health = $enemy.data('health'),
+                health = parseInt(health),
+                health = health - 1;
+                $enemy.data('health', health);
 
+                if(health == 0)
+                {
+                    $enemy.addClass('failed');
+                    degree = 140;
+                    $enemy.css({ WebkitTransform: 'rotate(' + degree + 'deg)', '-webkit-transition': '.3s'});
+                    $enemy.css({ '-moz-transform': 'rotate(' + degree + 'deg)'});
+                    $enemy.css('transform','rotate('+degree+'deg)');
+
+                    scoreStatus(50);
+                }
+        }
+
+        collide  = function($div1, $div2)
+        {
             var x1 = $div1.offset().left,
-            y1 = $div1.offset().top,
-            h1 = $div1.outerHeight(true),
-            w1 = $div1.outerWidth(true),
-            b1 = y1 + h1,
-            r1 = x1 + w1,
-            x2 = $div2.offset().left,
-            y2 = $div2.offset().top,
-            h2 = $div2.outerHeight(true),
-            w2 = $div2.outerWidth(true),
-            b2 = y2 + h2,
-            r2 = x2 + w2;
+                y1 = $div1.offset().top,
+                h1 = $div1.outerHeight(true),
+                w1 = $div1.outerWidth(true),
+                b1 = y1 + h1,
+                r1 = x1 + w1,
+                x2 = $div2.offset().left,
+                y2 = $div2.offset().top,
+                h2 = $div2.outerHeight(true),
+                w2 = $div2.outerWidth(true),
+                b2 = y2 + h2,
+                r2 = x2 + w2;
 
             if (b1 < y2 || y1 > b2 || r1 < x2 || x1 > r2)
             { }
             else
             {
-                healthStatus(10);
-                //$div2.fadeOut(100);
+                if( !$div1.hasClass('failed') )
+                {
+                    healthStatus(10);
+                }
             }
 
         },
 
         // accelerate whole items (stars, meteors, enemeny)
-        gearUp        = function(state) {
+        gearUp = function(state)
+        {
             if(state == 'slow') {
                 speed = 1;
             } else if(state == 'fast') {
@@ -243,24 +272,29 @@ var $airFight = (function() {
             }
         },
 
-        moveLeft    = function() {
+        moveLeft    = function()
+        {
             $flight.stop(true,true).animate({left: '-=20px'});
         },
 
-        moveRight    = function() {
+        moveRight    = function()
+        {
             $flight.stop(true,true).animate({left: '+=20px'});
         },
 
-        moveUp    = function() {
+        moveUp    = function()
+        {
             $flight.stop(true,true).animate({bottom: '+=20px'});
         },
 
-        moveDown    = function() {
+        moveDown    = function()
+        {
             $flight.stop(true,true).animate({bottom: '-=20px'});
         },
 
         // initialize some events
-        initEvents  = function() {
+        initEvents  = function()
+        {
 
             $flight.on("click",this,function(event){
                 event.preventDefault();
@@ -302,9 +336,8 @@ var $airFight = (function() {
                 }
 
             };
-
-
         };
+
      return { init : init };
 
 }) ();
